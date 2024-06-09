@@ -1,0 +1,71 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-image: url('/images/background.jpg');
+        background-size: cover;
+        height: 100vh;
+    }
+</style>
+
+<div class="container-fluid d-flex justify-content-center align-items-center" style="padding-top: 3rem;">
+    <div class="card shadow border-0 mt-4" style="max-width: 1500px;">
+        <div class="card-body p-4">
+            <div class="row">
+                <div class="col-md-24">
+                    <section>
+                        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                            <h2 style="text-align: center">Register Account</h2>
+                            <hr />
+                            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                                        <label asp-for="Input.Email">Email</label>
+                                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                                        <label asp-for="Input.Password">Password</label>
+                                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                                        <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-3">
+                                        <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-select">
+                                            <option disabled selected>Select Role</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg text-white" style="background-color: #D40511; font-weight:bold">Register</button>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>            
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
