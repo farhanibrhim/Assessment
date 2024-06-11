@@ -17,18 +17,15 @@ using Microsoft.Extensions.Logging;
 
 namespace AssessmentWeb.Areas.Identity.Pages.Account
 {
-    [AllowAnonymous]
     public class LoginModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
-        private readonly UserManager<IdentityUser> _userManager;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger, UserManager<IdentityUser> userManager)
+        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;
-            _userManager = userManager;
         }
 
         /// <summary>
@@ -106,13 +103,6 @@ namespace AssessmentWeb.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            // Check if the user is already authenticated
-            if (User.Identity.IsAuthenticated)
-            {
-                // If the user is already authenticated, redirect them to the home page or the requested URL
-                return LocalRedirect(returnUrl ?? "/");
-            }
-
             returnUrl ??= Url.Content("~/");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -122,27 +112,7 @@ namespace AssessmentWeb.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.FindByEmailAsync(Input.Email);
-                    if (user != null)
-                    {
-                        var userRoles = await _userManager.GetRolesAsync(user);
-
-                        // Log user roles for debugging
-                        _logger.LogInformation($"User roles: {string.Join(", ", userRoles)}");
-
-                        if (userRoles.Contains("Admin"))
-                        {
-                            _logger.LogInformation("User logged in as Admin.");
-                            return LocalRedirect("/Admin/Home/Index");
-                        }
-                        else if (userRoles.Contains("Employee"))
-                        {
-                            _logger.LogInformation("User logged in as Employee.");
-                            return LocalRedirect("/Employee/Home/Index");
-                        }
-                    }
-
-                    // Default redirection if the user is not an Admin or Employee
+                    _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -164,6 +134,8 @@ namespace AssessmentWeb.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
+
+
 
     }
 }

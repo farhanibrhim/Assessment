@@ -30,40 +30,13 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=HomePage}/{action=Index}/{id?}");
+
+
 app.MapRazorPages();
-
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{area=Employee}/{controller=Home}/{action=Index}/{id?}");
-
-app.UseEndpoints(endpoints =>
-{
-    // Default route for Admin area
-    endpoints.MapControllerRoute(
-        name: "admin",
-        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
-    // Default route for Employee area
-    endpoints.MapControllerRoute(
-        name: "employee",
-        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
-    // Default route for other controllers outside areas
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
-
-    endpoints.MapRazorPages();
-});
-
-
-app.MapGet("/", async context =>
-{
-    if (!context.User.Identity.IsAuthenticated)
-    {
-        context.Response.Redirect("/Identity/Account/Login");
-    }
-});
 
 
 app.Run();
